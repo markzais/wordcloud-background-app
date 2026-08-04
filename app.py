@@ -144,34 +144,27 @@ def render_png(wc: WordCloud, width: int, height: int, color_func, seed: int) ->
 
 
 def main():
-    st.set_page_config(page_title="Wordcloud Banner Generator", layout="wide")
+    st.set_page_config(page_title="Wordcloud Banner App", layout="wide")
     ensure_nltk_data()
 
-    st.title("LinkedIn / Twitter Wordcloud Banner Generator")
+    st.title("Wordcloud Banner App")
+    st.caption("LinkedIn | Twitter | Custom")
 
     with st.sidebar:
         st.header("1. Input")
         input_mode = st.radio(
             "Source of words",
-            ["Text (file upload or paste)", "Word list"],
-            help=(
-                "Text mode runs your content through tokenizing, POS-tagging and "
-                "lemmatizing (e.g. 'leading' -> 'lead'). Word list mode uses your "
-                "words exactly as typed, with no processing."
-            ),
+            ["Word list", "Text (file upload or paste)"],
+            captions=[
+                "Type or paste individual words/phrases, used exactly as entered.",
+                "Upload a .txt file or paste free-form writing to auto-extract words from.",
+            ],
         )
 
         raw_text = ""
         pasted_words = ""
         filter_stopwords = True
-        if input_mode == "Text (file upload or paste)":
-            uploaded = st.file_uploader("Upload a .txt file", type=["txt"])
-            pasted = st.text_area("...or paste text here", height=150)
-            if uploaded is not None:
-                raw_text = uploaded.read().decode("utf-8", errors="ignore")
-            elif pasted:
-                raw_text = pasted
-        else:
+        if input_mode == "Word list":
             pasted_words = st.text_area(
                 "Enter words or phrases, separated by commas or new lines. "
                 "Keep a multi-word phrase together (e.g. 'machine learning') "
@@ -183,6 +176,26 @@ def main():
             filter_stopwords = st.checkbox(
                 "Filter common stopwords (the, and, a...)", value=False
             )
+        else:
+            uploaded = st.file_uploader(
+                "Upload a .txt file",
+                type=["txt"],
+                help=(
+                    "Plain-text (.txt) file only, UTF-8 encoded — export or save "
+                    "your content as plain text first (not .docx, .pdf, or rich text). "
+                    "Any prose works: the app will tokenize and lemmatize it "
+                    "automatically (e.g. 'leading' becomes 'lead')."
+                ),
+            )
+            pasted = st.text_area(
+                "...or paste text here",
+                height=150,
+                help="Free-form writing, not individual words. Processed the same way as an uploaded file.",
+            )
+            if uploaded is not None:
+                raw_text = uploaded.read().decode("utf-8", errors="ignore")
+            elif pasted:
+                raw_text = pasted
 
         st.header("2. Size")
         size_choice = st.selectbox("Preset", list(SIZE_PRESETS.keys()) + ["Custom"])
