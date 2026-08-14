@@ -1,6 +1,5 @@
 """LinkedIn / Twitter wordcloud banner generator (Streamlit app)."""
 
-import base64
 import io
 import random
 import re
@@ -15,7 +14,6 @@ from wordcloud import WordCloud, STOPWORDS
 
 APP_DIR = Path(__file__).parent
 LOGO_PATH = APP_DIR / "images" / "zais_logo_mark_transparent.svg"
-GOLD = "#D4AF37"  # matches the "AI" emphasis color on zaisanalytics.com
 
 PHRASE_LOCK_PATTERN = re.compile(r"[^\s~]+(?:~[^\s~]+)+")
 
@@ -200,70 +198,18 @@ def build_example_banner() -> bytes:
     return render_png(wc, width, height, blue_color_func, seed=7)
 
 
-def render_logo_badge():
-    """A ZAIS Analytics watermark fixed to the top-right of the viewport, so
-    it stays put instead of scrolling away with the sidebar or main content.
-    'AI' is picked out in gold to match the emphasis used on zaisanalytics.com.
-    """
-    logo_b64 = base64.b64encode(LOGO_PATH.read_bytes()).decode("ascii")
-    st.markdown(
-        f"""
-        <style>
-        .zais-badge {{
-            position: fixed;
-            top: 0.6rem;
-            right: 8.5rem;
-            z-index: 999999;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            pointer-events: none;
-        }}
-        .zais-badge img {{
-            width: 34px;
-            height: 34px;
-        }}
-        .zais-badge .zais-word {{
-            font-weight: 700;
-            font-size: 1.05rem;
-            letter-spacing: 0.02em;
-            line-height: 1.15;
-        }}
-        .zais-badge .zais-word .ai {{
-            color: {GOLD};
-        }}
-        .zais-badge .zais-sub {{
-            display: block;
-            font-weight: 600;
-            font-size: 0.55rem;
-            letter-spacing: 0.18em;
-            color: {GOLD};
-        }}
-        @media (max-width: 900px) {{
-            .zais-badge {{ display: none; }}
-        }}
-        </style>
-        <div class="zais-badge">
-            <img src="data:image/svg+xml;base64,{logo_b64}" />
-            <span>
-                <span class="zais-word">Z<span class="ai">AI</span>S</span>
-                <span class="zais-sub">ANALYTICS</span>
-            </span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
 def main():
     st.set_page_config(
         page_title="Wordcloud Banner App", page_icon=str(LOGO_PATH), layout="wide"
     )
     ensure_nltk_data()
-    render_logo_badge()
 
-    st.title("Wordcloud Banner App")
-    st.caption("LinkedIn | Twitter | Facebook | Custom")
+    logo_col, title_col = st.columns([1, 9], vertical_alignment="center")
+    with logo_col:
+        st.image(str(LOGO_PATH), width=90)
+    with title_col:
+        st.title("Wordcloud Banner App")
+        st.caption("LinkedIn | Twitter | Facebook | Custom")
 
     with st.sidebar:
         st.header("1. Input")

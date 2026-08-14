@@ -168,3 +168,23 @@ of significant work so the next session can pick up context quickly.)
   `render_logo_badge()` may need adjusting. (2) Example banner's font
   range was too large; changed `build_example_banner()` from 20-95px to
   10-45px min/max font size.
+- **2026-08-14** — Reworked the logo placement again after user feedback:
+  the fixed top-right badge from the entry above was measured against the
+  *local* dev toolbar (Deploy button + hamburger, ~110px), but Streamlit
+  Community Cloud's deployed toolbar is wider (adds a Share button, GitHub
+  icon, etc.), so the badge covered it in production — exactly the
+  brittleness flagged as a risk in that entry. Removed `render_logo_badge()`
+  entirely (deleted the `base64` import and `GOLD` constant along with it,
+  now unused) in favor of a much simpler, non-fragile fix: the logo mark
+  now renders inline at the top-left of the main content area, in a
+  `st.columns([1, 9])` row beside the "Wordcloud Banner App" title, at
+  width=90 (up from 48 in the old sidebar version). Being in normal page
+  flow in the main content — not `position: fixed` and not inside the
+  sidebar's scroll container — it can never overlap Streamlit's own
+  toolbar (whatever buttons that has, locally or deployed), while still
+  satisfying the original ask (doesn't scroll away when the *sidebar*
+  scrolls, confirmed the same way as before: scrolling
+  `stSidebarContent` and checking the logo's bounding box was unchanged).
+  Also dropped the "ZAIS ANALYTICS" wordmark text entirely per feedback
+  that it didn't read well in this layout — just the circular logo mark
+  now. Verified visually via Playwright screenshot.
