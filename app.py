@@ -16,6 +16,7 @@ PHRASE_LOCK_PATTERN = re.compile(r"[^\s~]+(?:~[^\s~]+)+")
 SIZE_PRESETS = {
     "LinkedIn banner (1584 x 396)": (1584, 396),
     "Twitter/X banner (1263 x 421)": (1263, 421),
+    "Facebook cover (820 x 312)": (820, 312),
     "Condensed LinkedIn (960 x 396)": (960, 396),
 }
 
@@ -164,7 +165,7 @@ def main():
     ensure_nltk_data()
 
     st.title("Wordcloud Banner App")
-    st.caption("LinkedIn | Twitter | Custom")
+    st.caption("LinkedIn | Twitter | Facebook | Custom")
 
     with st.sidebar:
         st.header("1. Input")

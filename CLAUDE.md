@@ -1,10 +1,11 @@
 # LinkedIn Wordcloud
 
 A Streamlit app that generates grayscale/colored wordcloud banner images for
-LinkedIn, Twitter/X, or custom sizes — either from a curated word/phrase list
-or from free-form text that gets auto-lemmatized. Originally prototyped in
-`LinkedIn_Wordcloud.ipynb`; that notebook's logic (sizes, grayscale color
-function, WordCloud params) was ported into `app.py`.
+LinkedIn, Twitter/X, Facebook, or custom sizes — either from a curated
+word/phrase list or from free-form text that gets auto-lemmatized.
+Originally prototyped in `LinkedIn_Wordcloud.ipynb`; that notebook's logic
+(sizes, grayscale color function, WordCloud params) was ported into
+`app.py`.
 
 ## Files
 
@@ -71,9 +72,10 @@ smaller, etc., down to `min_font_size`. This is explained in-app via a
 caption near the word-list controls.
 
 Size presets: LinkedIn banner (1584×396), Twitter/X banner (1263×421),
-condensed LinkedIn (960×396, room for a profile photo), or custom
-width/height. Color schemes: grayscale (notebook default), blue-toned, or
-full color. Background color and font-size range are user-adjustable.
+Facebook cover (820×312), condensed LinkedIn (960×396, room for a profile
+photo), or custom width/height. Color schemes: grayscale (notebook
+default), blue-toned, or full color. Background color and font-size range
+are user-adjustable.
 Output renders inline with a PNG download button.
 
 ## Gotchas
@@ -120,3 +122,9 @@ of significant work so the next session can pick up context quickly.)
   leaking into the displayed phrase. Reworded the "repeat an entry" hint to
   explain rank-based sizing instead of implying fixed importance tiers.
   Both fixes verified against the user's real `wordlist.txt` via Playwright.
+- **2026-08-14** — Added a Facebook cover preset (820 x 312), positioned as
+  the third option (after Twitter/X, before Condensed LinkedIn and Custom).
+  Used 820 x 312, matching Facebook's actual on-page cover render size
+  rather than the 851 x 315 upload spec that gets center-cropped. Updated
+  the header caption to "LinkedIn | Twitter | Facebook | Custom". Verified
+  preset dropdown order via Playwright against the running app.
