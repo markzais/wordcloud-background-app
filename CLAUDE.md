@@ -21,6 +21,8 @@ Originally prototyped in `LinkedIn_Wordcloud.ipynb`; that notebook's logic
 - `linkedin3.txt` — private/encrypted personal input file, not used by the
   app directly.
 - `background.png` — a sample generated output image.
+- `images/zais_logo_mark_transparent.svg` — ZAIS Analytics logo mark, used
+  for in-app branding (sidebar masthead + browser favicon).
 - `gitignore` — present but named without the leading dot, so git does not
   actually treat it as `.gitignore`. Left as-is; flag to the user if this
   becomes a problem (e.g. venvs or generated PNGs getting committed).
@@ -128,3 +130,17 @@ of significant work so the next session can pick up context quickly.)
   rather than the 851 x 315 upload spec that gets center-cropped. Updated
   the header caption to "LinkedIn | Twitter | Facebook | Custom". Verified
   preset dropdown order via Playwright against the running app.
+- **2026-08-14** — Added ZAIS Analytics branding: the logo mark (dropped
+  into `images/`) now shows in a small sidebar masthead ("Z" icon + "ZAIS
+  ANALYTICS" text above "1. Input") and doubles as the browser-tab favicon
+  via `st.set_page_config(page_icon=...)` — Streamlit 1.60 supports SVG
+  file paths directly for both `st.image` and `page_icon` (confirmed by
+  reading `image_utils.py`; no PNG conversion needed). Also added a
+  pre-rendered example banner (`build_example_banner()`, `@st.cache_data`)
+  shown in the output area before the user clicks "Generate wordcloud", so
+  the initial screen isn't empty and new users see what the finished
+  product looks like. Used the existing blue-toned color scheme (not
+  grayscale) on a curated analytics/leadership-themed word list so it
+  reads as a deliberate example rather than a placeholder. Verified both
+  changes visually via a Playwright screenshot and by checking the
+  rendered `<link rel="icon">` href.

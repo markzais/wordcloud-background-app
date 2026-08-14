@@ -5,11 +5,15 @@ import random
 import re
 import string
 from collections import Counter
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import nltk
 import streamlit as st
 from wordcloud import WordCloud, STOPWORDS
+
+APP_DIR = Path(__file__).parent
+LOGO_PATH = APP_DIR / "images" / "zais_logo_mark_transparent.svg"
 
 PHRASE_LOCK_PATTERN = re.compile(r"[^\s~]+(?:~[^\s~]+)+")
 
@@ -18,6 +22,23 @@ SIZE_PRESETS = {
     "Twitter/X banner (1263 x 421)": (1263, 421),
     "Facebook cover (820 x 312)": (820, 312),
     "Condensed LinkedIn (960 x 396)": (960, 396),
+}
+
+EXAMPLE_FREQUENCIES = {
+    "data science": 6,
+    "machine learning": 5,
+    "analytics": 5,
+    "strategy": 4,
+    "leadership": 4,
+    "innovation": 3,
+    "growth": 3,
+    "insight": 3,
+    "artificial intelligence": 2,
+    "optimization": 2,
+    "mentorship": 2,
+    "storytelling": 1,
+    "impact": 1,
+    "collaboration": 1,
 }
 
 NLTK_PACKAGES = [
@@ -160,14 +181,40 @@ def render_png(wc: WordCloud, width: int, height: int, color_func, seed: int) ->
     return buf.getvalue()
 
 
+@st.cache_data(show_spinner=False)
+def build_example_banner() -> bytes:
+    """Pre-render a sample banner (blue-toned, not grayscale) shown before the
+    user generates their own, so the output area isn't just empty space."""
+    width, height = SIZE_PRESETS["LinkedIn banner (1584 x 396)"]
+    wc = generate_wordcloud_from_frequencies(
+        frequencies=EXAMPLE_FREQUENCIES,
+        width=width,
+        height=height,
+        background_color="#000000",
+        min_font_size=20,
+        max_font_size=95,
+        seed=7,
+    )
+    return render_png(wc, width, height, blue_color_func, seed=7)
+
+
 def main():
-    st.set_page_config(page_title="Wordcloud Banner App", layout="wide")
+    st.set_page_config(
+        page_title="Wordcloud Banner App", page_icon=str(LOGO_PATH), layout="wide"
+    )
     ensure_nltk_data()
 
     st.title("Wordcloud Banner App")
     st.caption("LinkedIn | Twitter | Facebook | Custom")
 
     with st.sidebar:
+        logo_col, name_col = st.columns([1, 3], vertical_alignment="center")
+        with logo_col:
+            st.image(str(LOGO_PATH), width=48)
+        with name_col:
+            st.markdown("**ZAIS ANALYTICS**")
+        st.divider()
+
         st.header("1. Input")
         input_mode = st.radio(
             "Source of words",
@@ -301,6 +348,8 @@ def main():
         )
     else:
         st.info("Fill in the sidebar and click **Generate wordcloud** to get started.")
+        st.caption("Example output — here's what a generated banner looks like:")
+        st.image(build_example_banner(), use_container_width=True)
 
 
 if __name__ == "__main__":
