@@ -144,3 +144,27 @@ of significant work so the next session can pick up context quickly.)
   reads as a deliberate example rather than a placeholder. Verified both
   changes visually via a Playwright screenshot and by checking the
   rendered `<link rel="icon">` href.
+- **2026-08-14** — Two follow-up fixes to the branding/example-banner work
+  above. (1) The sidebar masthead logo scrolled away with the rest of the
+  sidebar, so it's now `render_logo_badge()`: a `position: fixed` HTML/CSS
+  overlay (`st.markdown(..., unsafe_allow_html=True)`) pinned to the
+  top-right of the viewport (`right: 8.5rem`, `z-index: 999999`), built
+  from the logo SVG base64-embedded as a data URI. The `right` offset was
+  measured against Streamlit's native header controls (Deploy button +
+  hamburger menu, which occupy roughly the rightmost 110px of the header
+  at `z-index: 999990`) via Playwright bounding boxes, so the badge sits
+  just to their left without overlapping — confirmed fixed-position
+  behavior by scrolling `[data-testid="stSidebarContent"]` (the actual
+  scrollable node, not the outer `stSidebar`) and checking the badge's
+  bounding box was unchanged before/after. "AI" in "ZAIS" is colored gold
+  (`#D4AF37`) to match the emphasis treatment on zaisanalytics.com,
+  confirmed by screenshotting the live site and sampling pixel colors
+  directly (website uses `#D4AF37` gold on a dark background; this app's
+  light background keeps the non-"AI" letters in Streamlit's default dark
+  text color instead of the site's white, since white would be invisible
+  here). Note this relies on Streamlit's internal `data-testid` attributes
+  and header layout, which aren't a stable public API — if a future
+  Streamlit upgrade changes the toolbar width, the `right` offset in
+  `render_logo_badge()` may need adjusting. (2) Example banner's font
+  range was too large; changed `build_example_banner()` from 20-95px to
+  10-45px min/max font size.
