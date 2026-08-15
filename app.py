@@ -18,10 +18,15 @@ LOGO_PATH = APP_DIR / "images" / "zais_logo_mark_transparent.svg"
 PHRASE_LOCK_PATTERN = re.compile(r"[^\s~]+(?:~[^\s~]+)+")
 
 SIZE_PRESETS = {
-    "LinkedIn banner (1584 x 396)": (1584, 396),
-    "Twitter/X banner (1263 x 421)": (1263, 421),
+    "LinkedIn - Personal (1584 x 396)": (1584, 396),
+    "LinkedIn - Company (1128 x 191)": (1128, 191),
+    "Twitter/X (1263 x 421)": (1263, 421),
     "Facebook cover (820 x 312)": (820, 312),
     "Condensed LinkedIn (960 x 396)": (960, 396),
+}
+
+SIZE_NOTES = {
+    "LinkedIn - Company (1128 x 191)": "LinkedIn max upload size: 3 MB",
 }
 
 EXAMPLE_FREQUENCIES = {
@@ -185,7 +190,7 @@ def render_png(wc: WordCloud, width: int, height: int, color_func, seed: int) ->
 def build_example_banner() -> bytes:
     """Pre-render a sample banner (blue-toned, not grayscale) shown before the
     user generates their own, so the output area isn't just empty space."""
-    width, height = SIZE_PRESETS["LinkedIn banner (1584 x 396)"]
+    width, height = SIZE_PRESETS["LinkedIn - Personal (1584 x 396)"]
     wc = generate_wordcloud_from_frequencies(
         frequencies=EXAMPLE_FREQUENCIES,
         width=width,
@@ -293,13 +298,17 @@ def main():
             height = st.number_input("Height (px)", min_value=100, max_value=4000, value=400, step=10)
         else:
             width, height = SIZE_PRESETS[size_choice]
-            st.caption(f"{width} x {height} px")
+            caption = f"{width} x {height} px"
+            note = SIZE_NOTES.get(size_choice)
+            if note:
+                caption += f" · {note}"
+            st.caption(caption)
 
         st.header("3. Style")
         color_choice = st.selectbox("Color scheme", list(COLOR_FUNCS.keys()))
         background_color = st.color_picker("Background color", "#000000")
         min_font_size, max_font_size = st.slider(
-            "Font size range (px)", min_value=5, max_value=200, value=(20, 50)
+            "Font size range (px)", min_value=5, max_value=200, value=(10, 45)
         )
         seed = st.number_input("Random seed (layout)", min_value=0, max_value=9999, value=34)
 

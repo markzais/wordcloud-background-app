@@ -73,11 +73,12 @@ highest-frequency entry gets the largest size, next-highest gets slightly
 smaller, etc., down to `min_font_size`. This is explained in-app via a
 caption near the word-list controls.
 
-Size presets: LinkedIn banner (1584×396), Twitter/X banner (1263×421),
-Facebook cover (820×312), condensed LinkedIn (960×396, room for a profile
-photo), or custom width/height. Color schemes: grayscale (notebook
-default), blue-toned, or full color. Background color and font-size range
-are user-adjustable.
+Size presets: LinkedIn - Personal (1584×396), LinkedIn - Company
+(1128×191), Twitter/X (1263×421), Facebook cover (820×312), condensed
+LinkedIn (960×396, room for a profile photo), or custom width/height.
+Color schemes: grayscale (notebook default), blue-toned, or full color.
+Background color and font-size range (default 10-45px) are
+user-adjustable.
 Output renders inline with a PNG download button.
 
 ## Gotchas
@@ -188,3 +189,20 @@ of significant work so the next session can pick up context quickly.)
   Also dropped the "ZAIS ANALYTICS" wordmark text entirely per feedback
   that it didn't read well in this layout — just the circular logo mark
   now. Verified visually via Playwright screenshot.
+- **2026-08-15** — Split the LinkedIn preset into "LinkedIn - Personal
+  (1584 x 396)" (renamed from "LinkedIn banner") and a new "LinkedIn -
+  Company (1128 x 191)" (LinkedIn's recommended company-page cover size,
+  ~5.9:1 aspect ratio), positioned right after Personal. Added a
+  `SIZE_NOTES` dict so presets can carry an extra caption line beyond
+  their dimensions; used it here to surface LinkedIn's 3 MB max upload
+  size for the company cover. Dropped "banner" from the preset labels
+  ("LinkedIn banner" → "LinkedIn - Personal", "Twitter/X banner" →
+  "Twitter/X") to keep the now-longer LinkedIn entries from crowding the
+  dropdown. (Note: LinkedIn's docs also mention a 4200 x 700 canvas-scaling
+  option for the company cover, same ~6:1 proportion — not added as a
+  separate preset since it's the same crop, just higher-res; revisit if
+  the user wants an explicit high-res option.) Also changed the font-size
+  range slider's default from 20-50px to 10-45px so a fresh app load
+  matches the tuned range already used for the example banner. Verified
+  preset order, the new size note caption, and the slider's default
+  10/45 values via Playwright against the running app.
